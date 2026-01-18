@@ -2,16 +2,20 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { createClient, Session, User } from '@supabase/supabase-js';
 
-const supabaseUrl = 'https://your-project-url.supabase.co';
-const supabaseKey = 'your-anon-key';
+// Safe environment variable access
+const getEnv = (key: string): string | undefined => {
+  try {
+    return (process?.env as any)?.[key];
+  } catch {
+    return undefined;
+  }
+};
 
-// Note: In a real app, these come from process.env.API_KEY or similar
-// For this standalone code, we assume the environment is pre-configured
-// Fixed: Use process.env instead of import.meta.env to avoid TypeScript errors in some environments
-export const supabase = createClient(
-  process.env.VITE_SUPABASE_URL || supabaseUrl,
-  process.env.VITE_SUPABASE_ANON_KEY || supabaseKey
-);
+const supabaseUrl = getEnv('VITE_SUPABASE_URL') || 'https://your-project-url.supabase.co';
+const supabaseKey = getEnv('VITE_SUPABASE_ANON_KEY') || 'your-anon-key';
+
+// Initialize client only if URL is valid to avoid immediate 'Failed to fetch'
+export const supabase = createClient(supabaseUrl, supabaseKey);
 
 interface AuthContextType {
   session: Session | null;
@@ -28,6 +32,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // If using placeholder keys, we should skip initialization to prevent errors
+    if (supabaseUrl.includes('your-project-url')) {
+      console.warn('Supabase URL is not configured. Please set VITE_SUPABASE_URL.');
+      setLoading(false);
+      return;
+    }
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);

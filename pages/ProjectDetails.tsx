@@ -6,7 +6,7 @@ import { Project, Floor, Room, MaterialCategory } from '../types';
 import { toast } from 'react-hot-toast';
 import { 
   ArrowLeft, Layers, Plus, Trash2, Home, Sun, Info, 
-  Settings, Hammer, FileText, Download, Edit3, Ruler 
+  Settings, Hammer, FileText, Download, Edit3, Ruler, MapPin
 } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 
@@ -27,21 +27,27 @@ const ProjectDetails: React.FC = () => {
     if (!id) return;
     setLoading(true);
     
-    const [projRes, floorRes] = await Promise.all([
-      supabase.from('projects').select('*').eq('id', id).single(),
-      supabase.from('pavimentos').select('*').eq('project_id', id).order('nivel', { ascending: true })
-    ]);
+    try {
+      const [projRes, floorRes] = await Promise.all([
+        supabase.from('projects').select('*').eq('id', id).single(),
+        supabase.from('pavimentos').select('*').eq('project_id', id).order('nivel', { ascending: true })
+      ]);
 
-    if (projRes.data) setProject(projRes.data);
-    if (floorRes.data) {
-      setFloors(floorRes.data);
-      const floorIds = floorRes.data.map(f => f.id);
-      if (floorIds.length > 0) {
-        const { data: roomData } = await supabase.from('ambientes').select('*').in('pavimento_id', floorIds);
-        if (roomData) setRooms(roomData);
+      if (projRes.data) setProject(projRes.data);
+      if (floorRes.data) {
+        setFloors(floorRes.data);
+        const floorIds = floorRes.data.map(f => f.id);
+        if (floorIds.length > 0) {
+          const { data: roomData } = await supabase.from('ambientes').select('*').in('pavimento_id', floorIds);
+          if (roomData) setRooms(roomData);
+        }
       }
+    } catch (err) {
+      console.error('Error fetching project data:', err);
+      toast.error('Erro ao carregar dados do projeto');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const addFloor = async () => {
@@ -321,7 +327,3 @@ const ProjectDetails: React.FC = () => {
 };
 
 export default ProjectDetails;
-
-const MapPin: React.FC<{ size: number }> = ({ size }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-);

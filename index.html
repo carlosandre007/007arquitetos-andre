@@ -13,22 +13,26 @@
 <script type="importmap">
 {
   "imports": {
-    "react": "https://esm.sh/react@^19.2.3",
+    "react": "https://esm.sh/react@19.0.0",
+    "react-dom": "https://esm.sh/react-dom@19.0.0",
+    "react-dom/client": "https://esm.sh/react-dom@19.0.0/client",
+    "react-router-dom": "https://esm.sh/react-router-dom@6.28.0?external=react,react-dom",
+    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.47.12",
+    "react-hook-form": "https://esm.sh/react-hook-form@7.54.2?external=react",
+    "zod": "https://esm.sh/zod@3.24.1",
+    "jspdf": "https://esm.sh/jspdf@2.5.2",
+    "lucide-react": "https://esm.sh/lucide-react@0.469.0?external=react",
+    "react-hot-toast": "https://esm.sh/react-hot-toast@2.5.1?external=react,react-dom",
+    "@hookform/resolvers/zod": "https://esm.sh/@hookform/resolvers@3.10.0/zod?external=react,react-hook-form",
     "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
     "react/": "https://esm.sh/react@^19.2.3/",
-    "react-router-dom": "https://esm.sh/react-router-dom@^7.12.0",
-    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@^2.90.1",
-    "react-hook-form": "https://esm.sh/react-hook-form@^7.71.1",
-    "@hookform/resolvers/": "https://esm.sh/@hookform/resolvers@^5.2.2/",
-    "zod": "https://esm.sh/zod@^4.3.5",
-    "jspdf": "https://esm.sh/jspdf@^4.0.0",
-    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
-    "react-hot-toast": "https://esm.sh/react-hot-toast@^2.6.0"
+    "@hookform/resolvers/": "https://esm.sh/@hookform/resolvers@^5.2.2/"
   }
 }
 </script>
 </head>
 <body class="bg-slate-50 text-slate-900">
     <div id="root"></div>
+    <script type="module" src="index.tsx"></script>
 </body>
 </html>
